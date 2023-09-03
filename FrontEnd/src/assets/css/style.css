@@ -1,0 +1,27 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+
+nav {
+    background-color: #f8edeb;
+}
+
+body {
+    background-color: #fcd5ce;
+    height : auto;
+    min-height: 1080px;
+}
+
+#carousel-top {
+    width: 100%;
+}
+
+footer {
+    margin: 0;
+    background-color: #f8edeb;
+    bottom: -77;
+    width: 100%;
+    position: absolute;
+    /* height: 100px; */
+}

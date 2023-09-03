@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.tripApp.board.trippartner.mapper.NoteMapper">
+
+	<resultMap type="noteDto" id="note">
+		<result column="noteNo" property="noteNo"/>
+		<result column="articleNo" property="articleNo"/>
+		<result column="fromuser_id" property="fromuserId"/>
+		<result column="touser_id" property="touserId"/>
+		<result column="content" property="content"/>
+		<result column="isRead" property="isRead"/>
+		<result column="register_time" property="registerTime"/>
+		<result column="profile_image" property="profileImage"/>
+		<result column="profile_url" property="profileUrl"/>
+	</resultMap>
+	<resultMap type="java.lang.Integer" id="isreadCount"></resultMap>
+	<resultMap type="java.lang.Integer" id="sendCount"></resultMap>
+	<insert id="writeNote" parameterType="noteDto">
+		insert into note (articleNo,fromuser_id,touser_id,content,isRead,profile_image,profile_url)
+		values (#{articleNo},#{fromuserId},#{touserId}, #{content}, false,#{profileImage},#{profileUrl})
+	</insert>
+  <resultMap type="userDto" id="userAll" >
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_pw" property="userPw"/>
+        <result column="nickname" property="userNickname"/>
+        <result column="email_id" property="emailId"/>
+        <result column="email_domain" property="emailDomain"/>
+        <result column="join_date" property="joinDate"/>
+        <result column="admin" property="admin"/>
+        <result column="profile_image" property="profileImage"/>
+        <result column="profile_url" property="profileUrl"/>
+        <result column="gender" property="gender"/>
+        <result column="birth" property="birth"/>
+        <result column="reliability" property="reliability"/>
+    </resultMap>
+  
+  
+	<select id="listNote" parameterType="string" resultMap="note">
+		select *
+		from note
+		where touser_id=#{fromuserId}
+		order by noteNo desc
+		
+<!-- 		<include refid="search"></include> -->
+	</select>
+	
+	
+	<select id="viewNote" parameterType="int" resultMap="note">
+		select *
+		from note
+		where noteNo = #{noteNo}
+	</select>
+	
+		<update id="updateisRead" parameterType="noteDto">
+		update note
+		set isRead = true
+		where noteNo = #{noteNo}
+	</update>
+	
+	<select id="isReadCount" parameterType="string"  resultMap="isreadCount">
+		select count(*)
+		from note
+		where touser_id = #{touserId}
+		and isRead = false
+	</select>
+	
+	<select id="sendCount" parameterType="int"  resultMap="sendCount">
+		select count(distinct fromuser_id)
+		from note
+		where articleNo = #{articleNo}
+		
+	</select>
+	
+	<select id="viewUser" parameterType="string" resultMap="userAll">
+		select *
+		from user
+		where user_id=#{userId}
+	</select>
+	<delete id="deleteNote" parameterType="int">
+		delete from note
+		where noteNo = #{noteNo}
+	</delete>
+
+</mapper>

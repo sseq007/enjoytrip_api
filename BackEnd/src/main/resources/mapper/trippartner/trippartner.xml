@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.tripApp.board.trippartner.mapper.TripPartnerMapper">
+
+	<resultMap type="trippartnerDto" id="partner">
+		<result column="articleNo" property="articleNo"/>
+		<result column="user_id" property="userId"/>
+		<result column="location" property="location"/>
+		<result column="subject" property="subject"/>
+		<result column="content" property="content"/>
+		<result column="hit" property="hit"/>
+		<result column="register_time" property="registerTime"/>
+		<result column="partner_image" property="partnerImage"/>
+		<result column="partner_url" property="partnerUrl"/>
+		<result column="partner_count" property="partnerCount"/>
+		<result column="partner_object" property="partnerObject"/>
+		<result column="start_date" property="startDate"/>
+		<result column="end_date" property="endDate"/>
+		<result column="isend" property="end"/>
+		<result column="profile_image" property="profileImage"/>
+		<result column="profile_url" property="profileUrl"/>
+<!-- 		<collection property="partnerkeyword" ofType="partnerkeywordDto"  resultMap="partnerkeywordDto"></collection> -->
+	</resultMap>
+	
+	<resultMap type="userDto" id="userAll" >
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+        <result column="user_pw" property="userPw"/>
+        <result column="nickname" property="userNickname"/>
+        <result column="email_id" property="emailId"/>
+        <result column="email_domain" property="emailDomain"/>
+        <result column="join_date" property="joinDate"/>
+        <result column="admin" property="admin"/>
+        <result column="profile_image" property="profileImage"/>
+        <result column="profile_url" property="profileUrl"/>
+        <result column="gender" property="gender"/>
+        <result column="birth" property="birth"/>
+        <result column="reliability" property="reliability"/>
+    </resultMap>
+	<resultMap id="intResultMap" type="int">
+    <id property="articleNo" column="articleNo"/>
+	</resultMap>
+	<resultMap type="keywordoneDto" id="keywordoneDto">
+		<result column="articleNo" property="articleNo"/>
+		<result column="keywordOne" property="label"/>
+	</resultMap>
+	<resultMap type="keywordtwoDto" id="keywordtwoDto">
+		<result column="articleNo" property="articleNo"/>
+		<result column="keywordTwo" property="label"/>
+	</resultMap>
+	
+<!-- 	<resultMap type="boardDto" id="viewArticle" extends="article"> -->
+<!-- 		<collection property="fileInfos" column="article_no" javaType="list" select="fileInfoList"/> -->
+<!-- 	</resultMap> -->
+	
+<!-- 	<resultMap type="fileInfoDto" id="file"> -->
+<!-- 		<result column="save_folder" property="saveFolder"/> -->
+<!-- 		<result column="originaWl_file" property="originalFile"/> -->
+<!-- 		<result column="save_file" property="saveFile"/> -->
+<!-- 	</resultMap> -->
+
+	<insert id="writePartner" parameterType="trippartnerDto">
+		insert into trippartner (user_id,location,subject, content, hit, partner_image,partner_url,partner_count,partner_object,start_date,end_date,isend,profile_image,profile_url)
+		values (#{userId},#{location}, #{subject}, #{content}, 0,#{partnerImage},#{partnerUrl},#{partnerCount},#{partnerObject},#{startDate},#{endDate},true,#{profileImage},#{profileUrl})
+		<selectKey resultType="int" keyProperty="articleNo" order="AFTER">
+			select last_insert_id()
+		</selectKey>
+	</insert>
+	<update id="updateisEndOn" parameterType="noteDto">
+		update trippartner
+		set isend = true
+		where articleNo = #{articleNo}
+	</update>
+	<update id="updateisEndOff" parameterType="noteDto">
+		update trippartner
+		set isend = false
+		where articleNo = #{articleNo}
+	</update>
+	
+	<insert id="writeKeywordOne" parameterType="keywordoneDto" >
+	    INSERT INTO keywordone ( articleNo, keywordOne)
+    	VALUES  (#{articleNo} ,#{label})
+  </insert>
+	<insert id="writeKeywordTwo" parameterType="keywordtwoDto" >
+	    INSERT INTO keywordtwo ( articleNo,keywordTwo)
+    	VALUES  (#{articleNo} ,#{label})
+  </insert>
+  
+  <select id="getarticleNo" resultMap="intResultMap">
+    select articleNo
+    from trippartner
+    order by articleNo desc
+    limit 1;
+</select>
+  <select id="listKeywordOne"  parameterType="Integer" resultMap="keywordoneDto">
+		select articleNo, keywordOne
+		from keywordone
+		where articleNo = #{articleNo}
+	</select>
+	
+	 <select id="listKeywordTwo"  parameterType="Integer" resultMap="keywordtwoDto">
+		select articleNo, keywordTwo
+		from keywordtwo
+		where articleNo = #{articleNo}
+	</select>
+  
+  
+	<select id="listPartner" parameterType="map" resultMap="partner">
+		select *
+		from trippartner
+		order by articleNo desc
+<!-- 		<include refid="search"></include> -->
+	</select>
+	<select id="listPartnerOn" parameterType="map" resultMap="partner">
+		select *
+		from trippartner
+		where isend=true
+		order by articleNo desc
+<!-- 		<include refid="search"></include> -->
+	</select>
+	<select id="listPartnerOff" parameterType="map" resultMap="partner">
+		select *
+		from trippartner
+		where isend = false
+		order by articleNo desc
+<!-- 		<include refid="search"></include> -->
+	</select>
+	<select id="listPartnerHit" parameterType="map" resultMap="partner">
+		select *
+		from trippartner
+		where isend=true
+		order by hit desc
+<!-- 		<include refid="search"></include> -->
+	</select>
+	<select id="listPartnerhitOff" parameterType="map" resultMap="partner">
+		select *
+		from trippartner
+		where isend=false
+		order by hit desc
+<!-- 		<include refid="search"></include> -->
+	</select>
+	<select id="listPartnernewOn" parameterType="map" resultMap="partner">
+		select *
+		from trippartner
+		where isend=true
+		order by articleNo desc
+<!-- 		<include refid="search"></include> -->
+	</select>
+	<select id="listPartnernewOff" parameterType="map" resultMap="partner">
+		select *
+		from trippartner
+		where isend=false
+		order by articleNo desc
+<!-- 		<include refid="search"></include> -->
+	</select>
+	
+	<select id="viewUser" parameterType="string" resultMap="userAll">
+		select *
+		from user
+		where user_id=#{userId}
+	</select>
+	
+	
+	<select id="viewPartner" parameterType="int" resultMap="partner">
+		select articleNo, user_id, location,subject, content, hit, register_time ,partner_image,partner_url,partner_count,partner_object,start_date,end_date,isend
+		from trippartner
+		where articleNo = #{articleNo}
+	</select>
+	
+	
+	<update id="updateHit" parameterType="int">
+		update trippartner
+		set hit = hit + 1
+		where articleNo = #{articleNo}
+	</update>
+	
+	<update id="updatePartner" parameterType="trippartnerDto">
+		update trippartner
+		set location=#{location},subject = #{subject}, content = #{content},partner_image=#{partnerImage},partner_url=#{partnerUrl},partner_count=#{partnerCount},partner_object=#{partnerObject},start_date=#{startDate},end_date=#{endDate}
+		where articleNo = #{articleNo}
+	</update>
+	
+	<update id="updateKeywordOne" parameterType="keywordoneDto">
+		update keywordone
+		set keywordOne=#{label}
+		where articleNo = #{articleNo}
+	</update>
+	<update id="updateKeywordTwo" parameterType="keywordtwoDto">
+		update keywordtwo
+		set keywordTwo=#{label}
+		where articleNo = #{articleNo}
+	</update>
+	
+	
+	<delete id="deletePartner" parameterType="int">
+		delete from trippartner
+		where articleNo = #{articleNo}
+	</delete>
+	
+<!-- 	<select id="fileInfoList" resultMap="file"> -->
+<!-- 		select save_folder, original_file, save_file -->
+<!-- 		from file_info -->
+<!-- 		where article_no = #{articleNo} -->
+<!-- 	</select> -->
+	
+<!-- 	<delete id="deleteFile" parameterType="int"> -->
+<!-- 		delete from file_info -->
+<!-- 		where article_no = #{articleNo} -->
+<!-- 	</delete> -->
+<!-- 	<select id="getTotalArticleCount" parameterType="map" resultType="int"> -->
+<!-- 		select count(article_no) -->
+<!-- 		from board -->
+<!-- 		<where> -->
+<!-- 			<include refid="search"></include> -->
+<!-- 		</where> -->
+<!-- 	</select> -->
+
+<!-- 	<insert id="registerFile" parameterType="boardDto"> -->
+<!-- 		insert into file_info (article_no, save_folder, original_file, save_file) -->
+<!-- 		values -->
+<!-- 		<foreach collection="fileInfos" item="fileinfo" separator=" , "> -->
+<!-- 			(#{articleNo}, #{fileinfo.saveFolder}, #{fileinfo.originalFile}, #{fileinfo.saveFile}) -->
+<!-- 		</foreach> -->
+<!-- 	</insert> -->
+
+<!-- 	<sql id="search"> -->
+<!-- 		<if test="word != null and word != ''"> -->
+<!-- 			<if test="key == 'subject'"> -->
+<!-- 				and subject like concat('%', #{word}, '%') -->
+<!-- 			</if> -->
+<!-- 			<if test="key != 'subject'"> -->
+<!-- 				and ${key} = #{word} -->
+<!-- 			</if> -->
+<!-- 		</if> -->
+<!-- 	</sql> -->
+</mapper>
